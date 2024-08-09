@@ -29,7 +29,6 @@ func APIRequest(
 		return nil, fmt.Errorf("failed to generate URL: %w", err)
 	}
 
-	fmt.Println(url.String())
 	resp, err := http.Get(url.String())
 	if err != nil {
 		return nil, fmt.Errorf("failed to get response from external API: %w", err)
