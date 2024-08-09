@@ -105,8 +105,8 @@ func (c *Client) GetHistoricalFunding(
 func (c *Client) GetTrades(
 	ticker string,
 	limit uint8,
-	effectiveBeforeOrAtHeight uint64,
-	effectiveBeforeOrAt time.Time,
+	createdBeforeOrAtHeight uint64,
+	createdBeforeOrAt time.Time,
 	page uint8,
 ) (*trades.TradesResponse, error) {
 	p := struct {
@@ -118,8 +118,8 @@ func (c *Client) GetTrades(
 	}{
 		Ticker: ticker,
 		Limit:  limit,
-		Height: effectiveBeforeOrAtHeight,
-		Before: effectiveBeforeOrAt,
+		Height: createdBeforeOrAtHeight,
+		Before: createdBeforeOrAt,
 		Page:   page,
 	}
 
@@ -129,8 +129,8 @@ func (c *Client) GetTrades(
 		return nil, fmt.Errorf("validation failed: %w", err)
 	}
 
-	resp, err := trades.APIRequest(ticker, limit, effectiveBeforeOrAtHeight,
-		effectiveBeforeOrAt.Format("2006-01-02T15:04:05"), page)
+	resp, err := trades.APIRequest(ticker, limit, createdBeforeOrAtHeight,
+		createdBeforeOrAt.Format("2006-01-02T15:04:05"), page)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to get funding: %w", err)

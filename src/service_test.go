@@ -47,8 +47,8 @@ func TestTrades(t *testing.T) {
 	ticker := "ETH-USD"
 	limit := uint8(100)
 
-	now := time.Now().UTC()
-	dateTo := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), 0, 0, 0, time.UTC)
+	now := time.Now().Truncate(time.Hour).UTC()
+	dateTo := now.Add(-24 * time.Hour)
 
 	c := client.New()
 

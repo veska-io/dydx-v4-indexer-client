@@ -18,17 +18,18 @@ import (
 func APIRequest(
 	ticker string,
 	limit uint8,
-	effectiveBeforeOrAtHeight uint64,
-	effectiveBeforeOrAt string,
+	createdBeforeOrAtHeight uint64,
+	createdBeforeOrAt string,
 	page uint8,
 ) (*TradesResponse, error) {
 	var candlesResponse TradesResponse
 
-	url, err := generateUrl(ticker, limit, effectiveBeforeOrAtHeight, effectiveBeforeOrAt, page)
+	url, err := generateUrl(ticker, limit, createdBeforeOrAtHeight, createdBeforeOrAt, page)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate URL: %w", err)
 	}
 
+	fmt.Println(url.String())
 	resp, err := http.Get(url.String())
 	if err != nil {
 		return nil, fmt.Errorf("failed to get response from external API: %w", err)
@@ -56,8 +57,8 @@ func APIRequest(
 func generateUrl(
 	ticker string,
 	limit uint8,
-	effectiveBeforeOrAtHeight uint64,
-	effectiveBeforeOrAt string,
+	createdBeforeOrAtHeight uint64,
+	createdBeforeOrAt string,
 	page uint8,
 ) (*url.URL, error) {
 	cfg := config.MustNew()
@@ -69,12 +70,12 @@ func generateUrl(
 		params.Add("limit", fmt.Sprint(limit))
 	}
 
-	if effectiveBeforeOrAtHeight > 0 {
-		params.Add("effectiveBeforeOrAtHeight", fmt.Sprint(effectiveBeforeOrAtHeight))
+	if createdBeforeOrAtHeight > 0 {
+		params.Add("createdBeforeOrAtHeight", fmt.Sprint(createdBeforeOrAtHeight))
 	}
 
-	if effectiveBeforeOrAt != "" {
-		params.Add("effectiveBeforeOrAt", effectiveBeforeOrAt)
+	if createdBeforeOrAt != "" {
+		params.Add("createdBeforeOrAt", createdBeforeOrAt)
 	}
 
 	if page > 0 {
