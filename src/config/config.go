@@ -1,14 +1,11 @@
 package config
 
 import (
-	"flag"
 	"fmt"
 	"strings"
 
-	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/confmap"
 	"github.com/knadh/koanf/providers/env"
-	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
 )
 
@@ -19,6 +16,7 @@ const (
 	DEFAULT_URL          = "https://indexer.dydx.trade/v4"
 	DEFAULT_CANDLES_PATH = "/candles/perpetualMarkets"
 	DEFAULT_MARKETS_PATH = "/perpetualMarkets"
+	DEFAULT_FUNDING_PATH = "/historicalFunding"
 )
 
 type Config struct {
@@ -28,6 +26,7 @@ type Config struct {
 	Url         string `koanf:"url"`
 	CandlesPath string `koanf:"candles_path"`
 	MarketsPath string `koanf:"markets_path"`
+	FundingPath string `koanf:"funding_path"`
 }
 
 func MustNew() *Config {
@@ -36,11 +35,6 @@ func MustNew() *Config {
 	k := koanf.New(".")
 
 	mustLoadDefaults(k)
-
-	fileFlag := mustCheckFileFlag()
-	if fileFlag != "" {
-		mustLoadYamlFile(k, fileFlag)
-	}
 
 	mustLoadEnv(k)
 
@@ -60,24 +54,10 @@ func mustLoadDefaults(k *koanf.Koanf) {
 		"url":          DEFAULT_URL,
 		"candles_path": DEFAULT_CANDLES_PATH,
 		"markets_path": DEFAULT_MARKETS_PATH,
+		"funding_path": DEFAULT_FUNDING_PATH,
 	}, "."), nil)
 	if err != nil {
 		panic(fmt.Errorf("error while loading config defaults: %w", err))
-	}
-}
-
-func mustCheckFileFlag() string {
-	var fFlag = flag.String("ff", "", "Path to the configuration YAML file")
-
-	flag.Parse()
-
-	return *fFlag
-}
-
-func mustLoadYamlFile(k *koanf.Koanf, name string) {
-	err := k.Load(file.Provider(name), yaml.Parser())
-	if err != nil {
-		panic(fmt.Errorf("error while loading yaml config file: %w", err))
 	}
 }
 
