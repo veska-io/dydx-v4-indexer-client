@@ -42,3 +42,20 @@ func TestFunding(t *testing.T) {
 
 	t.Logf("response: %+v", resp)
 }
+
+func TestTrades(t *testing.T) {
+	ticker := "ETH-USD"
+	limit := uint8(100)
+
+	now := time.Now().UTC()
+	dateTo := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), 0, 0, 0, time.UTC)
+
+	c := client.New()
+
+	resp, err := c.GetTrades(ticker, limit, 0, dateTo, 0)
+	if err != nil {
+		t.Fatalf("failed to get response: %v", err)
+	}
+
+	t.Logf("response: %+v", resp)
+}

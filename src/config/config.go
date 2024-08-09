@@ -17,6 +17,7 @@ const (
 	DEFAULT_CANDLES_PATH = "/candles/perpetualMarkets"
 	DEFAULT_MARKETS_PATH = "/perpetualMarkets"
 	DEFAULT_FUNDING_PATH = "/historicalFunding"
+	DEFAULT_TRADES_PATH  = "/trades/perpetualMarket"
 )
 
 type Config struct {
@@ -27,6 +28,7 @@ type Config struct {
 	CandlesPath string `koanf:"candles_path"`
 	MarketsPath string `koanf:"markets_path"`
 	FundingPath string `koanf:"funding_path"`
+	TradesPath  string `koanf:"trades_path"`
 }
 
 func MustNew() *Config {
@@ -55,6 +57,7 @@ func mustLoadDefaults(k *koanf.Koanf) {
 		"candles_path": DEFAULT_CANDLES_PATH,
 		"markets_path": DEFAULT_MARKETS_PATH,
 		"funding_path": DEFAULT_FUNDING_PATH,
+		"trades_path":  DEFAULT_TRADES_PATH,
 	}, "."), nil)
 	if err != nil {
 		panic(fmt.Errorf("error while loading config defaults: %w", err))

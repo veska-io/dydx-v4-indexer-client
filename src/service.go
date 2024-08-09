@@ -8,6 +8,7 @@ import (
 	"github.com/veska-io/dydx-v4-indexer-client/src/candles"
 	"github.com/veska-io/dydx-v4-indexer-client/src/funding"
 	"github.com/veska-io/dydx-v4-indexer-client/src/markets"
+	"github.com/veska-io/dydx-v4-indexer-client/src/trades"
 )
 
 type Client struct{}
@@ -93,6 +94,43 @@ func (c *Client) GetHistoricalFunding(
 
 	resp, err := funding.APIRequest(ticker, limit, effectiveBeforeOrAtHeight,
 		effectiveBeforeOrAt.Format("2006-01-02T15:04:05"))
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get funding: %w", err)
+	}
+
+	return resp, nil
+}
+
+func (c *Client) GetTrades(
+	ticker string,
+	limit uint8,
+	effectiveBeforeOrAtHeight uint64,
+	effectiveBeforeOrAt time.Time,
+	page uint8,
+) (*trades.TradesResponse, error) {
+	p := struct {
+		Ticker string `validate:"required"`
+		Limit  uint8  `validate:"min=1,max=100"`
+		Height uint64
+		Before time.Time
+		Page   uint8
+	}{
+		Ticker: ticker,
+		Limit:  limit,
+		Height: effectiveBeforeOrAtHeight,
+		Before: effectiveBeforeOrAt,
+		Page:   page,
+	}
+
+	v := validator.New(validator.WithRequiredStructEnabled())
+	err := v.Struct(p)
+	if err != nil {
+		return nil, fmt.Errorf("validation failed: %w", err)
+	}
+
+	resp, err := trades.APIRequest(ticker, limit, effectiveBeforeOrAtHeight,
+		effectiveBeforeOrAt.Format("2006-01-02T15:04:05"), page)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to get funding: %w", err)
