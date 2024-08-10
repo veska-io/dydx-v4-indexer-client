@@ -59,11 +59,11 @@ func generateUrl(ticker, resolution string, limit uint8, fromISO, toISO string) 
 	}
 
 	if fromISO != "" {
-		params.Add("from", fromISO)
+		params.Add("fromISO", fromISO)
 	}
 
 	if toISO != "" {
-		params.Add("to", toISO)
+		params.Add("toISO", toISO)
 	}
 
 	u, err := url.Parse(baseURL)
